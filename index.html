@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Xiaoxiao5016.GitHub.io by mryang5016</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Xiaoxiao5016.GitHub.io</h1>
+      <h2 class="project-tagline">测试</h2>
+      <a href="https://github.com/mryang5016/xiaoxiao5016.github.io" class="btn">View on GitHub</a>
+      <a href="https://github.com/mryang5016/xiaoxiao5016.github.io/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/mryang5016/xiaoxiao5016.github.io/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p>##spring+springmvc+mybatis整合心得##</p>
+<p><strong>1、spring框架</strong> (框架的核心)</p>
+<pre><code>*1.导入jar（10个jar）
+	*基础4个核心包+1个依赖包：
+		* core		---  核心包
+		* beans     ---  管理对象
+			*依赖包：org.apache.commons.logging.1.1.1.jar---日志包
+		* context	 --- 上下文
+		* expression --- 表达式
+		
+	*事务包 （2）
+		*jdbc ---  连接
+		*tx	  ---  事务
+			
+
+	*切面包	（3）
+		*Aop --- 面向切面编程
+		   *依赖包：
+			  *aop联盟
+			  *.org.aspectJ.weaver1.6.8.jar
+</code></pre>
+<hr>
+<pre><code>*2.配置文件
+	*applicationContext.xml/beans.xml
+	文件位置：
+			*1.位于源代码包【Sourece folder】
+			*2.位于WEB-INF/下
+	写法：
+			*1.读取配置文件：db.properties
+				*例：&lt;context:property-placeholder location="classpath:applicationContext.xml" /&gt;
+			
+			*配置数据源
+				*数据库驱动
+				*数据库连接
+				*数据库用户名
+				*数据库密码
+					*最大连接数maxIdle
+					*最小连接数minIdle
+					*初始化连接数"initialSize"
+						**例：&lt;bean id="dataSource" class=""&gt;
+							  &lt;property name="" ref="" value=""/&gt; 
+							&lt;/bean&gt; 
+		
+			*事务管理器
+						**例：&lt;bean id="transactionManager" class=""&gt;
+								&lt;property name="datasource" ref="dataSource"&gt;
+							&lt;/bean&gt;
+
+			*[事务]通知（增强方法）
+					
+						**例：&lt;tx:advice id="txAdvice" transaction-Manager="transactionManager"  &gt;
+								&lt;!--传播行为--&gt;
+							&lt;tx:method name="save" propagation="REQUIRED" /&gt;
+					 		&lt;tx:method name="insert" propagation="REQUIRED" /&gt;
+					 		&lt;tx:method name="create" propagation="REQUIRED" /&gt;
+					 		&lt;tx:method name="delete" propagation="REQUIRED" /&gt;
+					 		&lt;tx:method name="update" propagation="REQUIRED" /&gt;
+					 		&lt;tx:method name="find" propagation="SUPPORTS" /&gt;
+			
+			*切面
+						
+					**例：&lt;aop:config&gt;
+							&lt;aop:advisor advice-ref="txAdvice"/&gt;
+ 							&lt;aop:pointcut expression="" id=""/&gt;
+
+			*扫描mapper包
+					*扫描mybatis持久化的映射文件
+						**例: &lt;context:component-scan base-package="cn.javabs.mapper"/&gt;
+
+		    *扫描services包
+						**例：&lt;context:component-scan base-package="cn.javabs.service"/&gt;
+</code></pre>
+<hr>
+<pre><code>*3.配置文件
+	* web.xml
+		*1. 找到配置文件的位置&lt;!-- 指定spring配置文件的位置 --&gt;
+		&lt;context-param&gt;
+			&lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+			&lt;param-value&gt;classpath:applicationContext.xml&lt;/param-value&gt;
+		&lt;/context-param&gt;
+		*2. 配置监听器  		&lt;!-- 监听器  --&gt;
+		&lt;listener&gt;	
+			&lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;
+		&lt;/listener&gt;
+</code></pre>
+<hr>
+<pre><code>43.配置文件
+	* db.properties[根据不同的数据源去写配置]
+		*1. 数据驱动
+		*2. 数据链接
+				**mysql：
+					jdbc:mysql://192.168.50.9:3306/DBName
+		*3. 数据库用户名
+		*4. 数据库密码
+</code></pre>
+<hr>
+<p><strong>2、mybatis框架</strong></p>
+<pre><code>*1.导入jar包（13个jar包）
+	*核心包：mybatis-3.4.2.jar
+
+	*依赖包：
+			ant-1.9.6.jar
+			ant-launcher-1.9.6.jar
+			asm-5.1.jar
+			cglib-3.2.4.jar
+			commons-logging-1.2
+			javassist-3.21.0-GA
+			log4j-1.2.17.jar
+			log4j-api-2.3.jar
+			log4j-core-2.3.jar
+			ognl-3.1.12.jar
+			slf4j-api-1.7.22.jar
+			slf4j-log4j12-1.7.22.jar
+</code></pre>
+<hr>
+<pre><code>*2.配置文件
+		*mybatis-config.xml
+
+			**起别名【在写动态传参数类型时，可以简写类名】
+				&lt;typeAliases&gt;
+		  			&lt;package name="cn.javabs.ssm.po"/&gt;
+		  		&lt;/typeAliases&gt;
+</code></pre>
+<hr>
+<pre><code>*3.持久化类的生成器
+		* 生成持久化类 + 配置文件 + dao接口
+</code></pre>
+<hr>
+<h2>
+<a id="与数据库进行连接的辅助jar包" class="anchor" href="#%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9B%E8%A1%8C%E8%BF%9E%E6%8E%A5%E7%9A%84%E8%BE%85%E5%8A%A9jar%E5%8C%85" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>与数据库进行连接的辅助jar包</h2>
+<p><strong>mybatis与spring整合的中间jar包（1个）</strong></p>
+<pre><code>* mybatis-spring-1.3.1.jar
+</code></pre>
+<hr>
+<p><strong>mysql数据库的驱动jar包（1个）</strong></p>
+<pre><code>* mysql-connector-java-5.1.8.jar
+</code></pre>
+<hr>
+<p><strong>数据库的数据源连接池jar包-dbcp（2个）</strong>[数据源二选一]</p>
+<pre><code> * commons-dbcp2-2.1.1.jar
+ * commons-pool2-2.4.2.jar
+</code></pre>
+<hr>
+<p><strong>数据库的数据源连接池jar包-c3p0（1个）</strong>[数据源二选一]</p>
+<pre><code> * c3p0-0.9.1.2.jar
+</code></pre>
+<hr>
+<p><strong>3、SpringMVC框架</strong></p>
+<pre><code>*1.导入jar包
+		* webmvc.jar
+		* web.jar
+</code></pre>
+<hr>
+<pre><code>*2.配置文件
+	web.xml
+		配置前端控制器
+			&lt;!-- 前端控制器 :springmvc配置 --&gt;
+			如果不配置初始化参数  框架默认配置文件名为：ServletName-servlet.xml
+										举例：以下若不配置初始化，默认名称为：spring-servlet.xml
+			  	&lt;servlet&gt;
+			  		&lt;servlet-name&gt;spring&lt;/servlet-name&gt;
+			  		&lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+			  		&lt;init-param&gt;
+			  			&lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+			  			&lt;param-value&gt;classpath:springmvc-config.xml&lt;/param-value&gt;
+			  		&lt;/init-param&gt;
+			  		&lt;!-- 自动加载前端控制器 --&gt;
+			  		&lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+			  	&lt;/servlet&gt;
+			  	
+			  	&lt;servlet-mapping&gt;
+			  		&lt;servlet-name&gt;spring&lt;/servlet-name&gt;
+			  		&lt;url-pattern&gt;/&lt;/url-pattern&gt;
+			  	&lt;/servlet-mapping&gt;
+</code></pre>
+<hr>
+<pre><code>			为了避免中文输出乱码：[建议配置编码过滤器]
+					&lt;!-- 编码过滤器  --&gt;
+					  	&lt;filter&gt;
+					  		&lt;filter-name&gt;encoding&lt;/filter-name&gt;
+					  		&lt;filter-class&gt;org.springframework.web.filter.CharacterEncodingFilter&lt;/filter-class&gt;
+					  		&lt;init-param&gt;
+					  			&lt;param-name&gt;encoding&lt;/param-name&gt;
+					  			&lt;param-value&gt;utf-8&lt;/param-value&gt;
+					  		&lt;/init-param&gt;
+					  	&lt;/filter&gt;
+
+					  	&lt;filter-mapping&gt;
+					  		&lt;filter-name&gt;encoding&lt;/filter-name&gt;
+					  		&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+					  	&lt;/filter-mapping&gt;
+</code></pre>
+<hr>
+<pre><code>			注意：拦截的是所有  一般开发使用的是“/”代表仅不拦截.jsp的后缀
+				 如果想不拦截其他的静态资源，需要在springmvc-config.xml中加入以下标签:
+					&lt;!-- 配置静态资源的访问映射路径  此配置中的文件  将不会被前台的 控制器进行拦截 --&gt;
+						&lt;mvc:resources location="/js/" mapping="/js/**"/&gt;
+						&lt;mvc:resources location="/css/" mapping="/css/**"/&gt;
+						&lt;mvc:resources location="/fonts/" mapping="/fonts/**"/&gt;
+						&lt;mvc:resources location="/images/" mapping="/images/**"/&gt;
+</code></pre>
+<hr>
+<pre><code>*2.配置文件
+	spring-config.xml
+		*1.配置扫描器[controller包]
+				例：&lt;context:component-scan base-package="cn.javabs.ssm.controller"/&gt;
+		*2.加载注解驱动
+				例：&lt;mvc:annotation-driven/&gt;
+		*3. 配置静态资源的访问映射路径  此配置中的文件  将不会被前台的 控制器进行拦截 
+					&lt;mvc:resources location="/js/" mapping="/js/**"/&gt;
+					&lt;mvc:resources location="/css/" mapping="/css/**"/&gt;
+					&lt;mvc:resources location="/fonts/" mapping="/fonts/**"/&gt;
+					&lt;mvc:resources location="/images/" mapping="/images/**"/&gt;
+		*4.配置视图解析器
+					&lt;bean  class="org.springframework.web.servlet.view.InternalResourceViewResolver"&gt;
+						&lt;!--前缀--&gt;
+						&lt;property name="prefix" value="/WEB-INF/jsp/"/&gt;
+						&lt;!--后缀--&gt;
+						&lt;property name="suffix" value=".jsp"/&gt;
+					&lt;/bean&gt;
+</code></pre>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/mryang5016/xiaoxiao5016.github.io">Xiaoxiao5016.GitHub.io</a> is maintained by <a href="https://github.com/mryang5016">mryang5016</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
